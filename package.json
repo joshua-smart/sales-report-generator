@@ -19,13 +19,13 @@
     "config": {
         "forge": {
             "packagerConfig": {
-                "icon": ""
+                "icon": "./icon.ico"
             },
             "makers": [
                 {
                     "name": "@electron-forge/maker-squirrel",
                     "config": {
-                        "iconUrl": ""
+                        "iconUrl": "https://raw.githubusercontent.com/joshua-smart/sales-report-generator/main/icon.ico"
                     }
                 }
             ]
