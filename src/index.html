@@ -3,14 +3,14 @@
     <head>
         <meta charset="utf-8">
         <title>Hello, world!</title>
-        <link rel="stylesheet" href="output.css">
+        <link rel="stylesheet" href="build/output.css">
     </head>
     <body class="p-2 flex h-screen">
         <div id="input-container" class="p-2 flex flex-col w-1/2 min-w-[15rem]">
             <div class="text-2xl m-2 block">Input source sheet:</div>
-            <input class="font-sans bg-gray-300 p-2 rounded w-full" id="file-input" type="file"></input>
+            <input class="font-sans bg-gray-300 p-2 rounded w-full" id="file-input" type="file" accept=".xlsx"></input>
             <div id="table-container" class="rounded bg-gray-300 flex-1 mt-8 p-2 overflow-auto">
-                <table id="input-table" class="w-full">
+                <table id="input-table" class="w-full text-xs">
                     <thead>
                         <tr class="bg-gray-200">
                             <th class="border-2 border-gray-400">Category</th>
@@ -47,6 +47,6 @@
         <div id="output-container">
 
         </div>
-        <script type="module" src="./renderer.js" charset="utf-8"></script>
+        <script type="module" src="./build/bundle.js" charset="utf-8"></script>
     </body>
 </html>

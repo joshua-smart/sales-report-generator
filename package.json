@@ -8,7 +8,9 @@
         "start": "electron-forge start",
         "package": "electron-forge package",
         "make": "electron-forge make",
-        "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/output.css --watch"
+        "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/build/output.css --watch",
+        "webpack-dev": "npx webpack watch --config ./webpack.config.js --mode development",
+        "webpack-prod": "npx webpack --config ./webpack.config.js --mode production"
     },
     "keywords": [],
     "author": {
@@ -34,8 +36,15 @@
     "devDependencies": {
         "@electron-forge/cli": "^6.0.0-beta.61",
         "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+        "@types/lodash": "^4.14.178",
         "electron": "^16.0.5",
-        "tailwindcss": "^3.0.7"
+        "lodash": "^4.17.21",
+        "source-map-loader": "^3.0.0",
+        "tailwindcss": "^3.0.7",
+        "ts-loader": "^9.2.6",
+        "webpack": "^5.65.0",
+        "webpack-cli": "^4.9.1",
+        "xlsx": "^0.17.4"
     },
     "dependencies": {
         "electron-squirrel-startup": "^1.0.0"
