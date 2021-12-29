@@ -1,0 +1,43 @@
+{
+    "name": "sales-report-generator",
+    "productName": "sales report generator",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "electron-forge start",
+        "package": "electron-forge package",
+        "make": "electron-forge make",
+        "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/output.css --watch"
+    },
+    "keywords": [],
+    "author": {
+        "name": "Joshua Smart",
+        "email": "josh@thesmarts.co.uk"
+    },
+    "license": "MIT",
+    "config": {
+        "forge": {
+            "packagerConfig": {
+                "icon": ""
+            },
+            "makers": [
+                {
+                    "name": "@electron-forge/maker-squirrel",
+                    "config": {
+                        "iconUrl": ""
+                    }
+                }
+            ]
+        }
+    },
+    "devDependencies": {
+        "@electron-forge/cli": "^6.0.0-beta.61",
+        "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+        "electron": "^16.0.5",
+        "tailwindcss": "^3.0.7"
+    },
+    "dependencies": {
+        "electron-squirrel-startup": "^1.0.0"
+    }
+}
