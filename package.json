@@ -2,7 +2,7 @@
     "name": "sales-report-generator",
     "productName": "sales report generator",
     "version": "1.0.0",
-    "description": "",
+    "description": "sales report generator",
     "main": "src/index.js",
     "scripts": {
         "start": "electron-forge start",
