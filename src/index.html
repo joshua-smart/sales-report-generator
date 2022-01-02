@@ -2,50 +2,50 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Hello, world!</title>
+        <title>sales report generator</title>
         <link rel="stylesheet" href="build/output.css">
     </head>
     <body class="p-2 flex h-screen">
-        <div id="input-container" class="p-2 flex flex-col w-1/2 min-w-[15rem]">
-            <div class="text-2xl m-2 block">Input source sheet:</div>
-            <input class="font-sans bg-gray-300 p-2 rounded w-full" id="file-input" type="file" accept=".xlsx"></input>
+        <div class="p-2 flex flex-col w-1/2 min-w-[15rem] mr-4">
+            <div class="text-2xl m-2 ml-0">Input source table:</div>
+            <input class="font-sans bg-gray-300 p-2 rounded w-full h-12" id="file-input" type="file" accept=".xlsx"></input>
             <div id="table-container" class="rounded bg-gray-300 flex-1 mt-8 p-2 overflow-auto">
                 <table id="input-table" class="w-full text-xs">
                     <thead>
                         <tr class="bg-gray-200">
-                            <th class="border-2 border-gray-400">Category</th>
-                            <th class="border-2 border-gray-400">Item Name</th>
-                            <th class="border-2 border-gray-400">Item Variation</th>
-                            <th class="border-2 border-gray-400">SKU</th>
-                            <th class="border-2 border-gray-400">Items Sold</th>
-                            <th class="border-2 border-gray-400">Product Sales</th>
-                            <th class="border-2 border-gray-400">Items Refunded</th>
-                            <th class="border-2 border-gray-400">Refunds</th>
-                            <th class="border-2 border-gray-400">Discounts & Comps</th>
-                            <th class="border-2 border-gray-400">Net Sales</th>
-                            <th class="border-2 border-gray-400">Gross Sales</th>
+                            <th class="border-2 border-gray-400">&nbsp</th>
+                            <th class="border-2 border-gray-400">&nbsp</th>
+                            <th class="border-2 border-gray-400">&nbsp</th>
+                            <th class="border-2 border-gray-400">&nbsp</th>
+                            <th class="border-2 border-gray-400">&nbsp</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
-                <script>
-                    const table = document.querySelector('#input-table tbody');
-                    for(let i = 0; i < 20; i++) {
-                        const tr = document.createElement('tr');
-                        tr.className = `tr`;
-                        for(let j = 0; j < 11; j++) {
-                            const td = document.createElement('td');
-                            td.innerHTML = `&nbsp`; td.className = `td`;
-                            tr.appendChild(td);
-                        }
-                        table.appendChild(tr);
-                    }
-                </script>
             </div>
         </div>
-        <div id="output-container">
-
+        <div class="p-2 flex flex-col flex-1 w-1/2">
+            <div class="text-2xl m-2 ml-0">Commissions:</div>
+            <div class="flex-1 bg-gray-300 rounded p-2 overflow-auto">
+                <table id="commissions-table" class="w-full text-xs">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border-2 border-gray-400">Excluded</th>
+                            <th class="border-2 border-gray-400">Category</th>
+                            <th class="border-2 border-gray-400">Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="mt-8 p-2 rounded bg-gray-300 whitespace-nowrap truncate flex justify-between">
+                <div class="">
+                    <button id="output-dir-input" type="button" class="bg-gray-100 p-1 rounded border border-gray-500 hover:bg-gray-200">Select output folder</button>
+                    <span class="p-2 text-lg truncate" id="output-dir-result">No folder selected</span>
+                </div>
+                <button id="download-button" disabled="true" type="button" class="bg-gray-100 p-1 rounded border border-gray-500 hover:bg-gray-200 disabled:opacity-50 inline-block aspect-square h-full"><img src="file_download_black_48dp.svg" alt="download" class="scale-125"></button>
+            </div>
         </div>
         <script type="module" src="./build/bundle.js" charset="utf-8"></script>
     </body>
