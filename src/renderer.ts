@@ -69,52 +69,51 @@ class Main {
                 return array.concat(newRow);
             }, []);
 
-            if (!commission['type'] || commission['type'] == '£') {
-                const value = Number(commission['value']);
-                const totalItems = categoryTable.reduce((total: number, row: { [x: string]: number; }) => {
-                    return total + row['Items Sold'] - row['Items Refunded'];
-                }, 0);
-                const totalSales = categoryTable.reduce((total: number, row: { [x: string]: any; }) => {
-                    return total + Number(row['Gross Sales']);
-                }, 0);
+            const value = Number(commission['value']);
+            const totalItems = categoryTable.reduce((total: number, row: { [x: string]: number; }) => {
+                return total + row['Items Sold'] - row['Items Refunded'];
+            }, 0);
+            const totalSales: number = categoryTable.reduce((total: number, row: { [x: string]: any; }) => {
+                return total + Number(row['Gross Sales']);
+            }, 0);
 
+            categoryTable.forEach(row => {
+                ['Product Sales', 'Refunds', 'Net Sales', 'Gross Sales', 'Discounts & Comps'].forEach(key => {
+                    row[key] = `£${Number(row[key]).toFixed(2)}`;
+                });
+            });
+
+            if (!commission['type'] || commission['type'] == '£') {
                 categoryTable.push({
                     'Refunds': `Total items:`,
                     'Discounts & Comps': `${totalItems}`,
                     'Net Sales': `Total sales:`,
-                    'Gross Sales': `£${totalSales}`
+                    'Gross Sales': `£${totalSales.toFixed(2)}`
                 });
                 categoryTable.push({
                     'Net Sales': `Commission @ £${value}:`,
-                    'Gross Sales': `£${totalItems * value}`
+                    'Gross Sales': `£${(totalItems * value).toFixed(2)}`
                 });
                 categoryTable.push({
                     'Net Sales': 'Total owed:',
-                    'Gross Sales': `£${totalSales - totalItems * value}`
+                    'Gross Sales': `£${(totalSales - totalItems * value).toFixed(2)}`
                 });
             } else {
-                const value = Number(commission['value']);
-                const totalItems = categoryTable.reduce((total: number, row: { [x: string]: number; }) => {
-                    return total + row['Items Sold'] - row['Items Refunded'];
-                }, 0);
-                const totalSales = categoryTable.reduce((total: number, row: { [x: string]: any; }) => {
-                    return total + Number(row['Gross Sales']);
-                }, 0);
-                const commissionValue = round(totalSales * value / 100, 2);
+                const commissionValue = totalSales * value / 100;
 
                 categoryTable.push({
                     'Refunds': `Total items:`,
                     'Discounts & Comps': `${totalItems}`,
                     'Net Sales': `Total sales:`,
-                    'Gross Sales': `£${round(totalSales, 2)}`
+                    'Gross Sales': `£${round(totalSales, 2).toFixed(2)}`
                 });
                 categoryTable.push({
                     'Net Sales': `Commission @ ${value}%:`,
-                    'Gross Sales': `£${commissionValue}`
+                    'Gross Sales': `£${round(commissionValue).toFixed(2)}`
                 });
                 categoryTable.push({
                     'Net Sales': 'Total owed:',
-                    'Gross Sales': `£${round(totalSales - commissionValue, 2)}`
+                    'Gross Sales': `£${round(totalSales - commissionValue, 2).toFixed(2)}`
                 });
             }
 
@@ -168,20 +167,20 @@ class Main {
             </td>`;
 
             row.querySelector('.excluded-checkbox').addEventListener('click', e => {
-                const newCommission = clone(commission);
+                const newCommission = commissions.get(category) ? clone(commissions.get(category)) : {};
                 newCommission['excluded'] = (<HTMLInputElement>e.target).checked;
                 commissions.set(category, newCommission);
             });
 
             row.querySelector('.commission-type-select').addEventListener('change', e => {
-                const newCommission = clone(commission);
+                const newCommission = commissions.get(category) ? clone(commissions.get(category)) : {};
                 newCommission['type'] = (<HTMLInputElement>e.target).value
                 commissions.set(category, newCommission);
             });
 
             row.querySelector('.commission-value-input').addEventListener('input', e => {
                 const value = (<HTMLInputElement>e.target).value
-                const newCommission = clone(commission);
+                const newCommission = commissions.get(category) ? clone(commissions.get(category)) : {};
                 newCommission['value'] = value;
                 commissions.set(category, newCommission);
                 if(isNaN(+value) || value == "") {
