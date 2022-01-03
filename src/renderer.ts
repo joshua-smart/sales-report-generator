@@ -1,5 +1,5 @@
 import { clone, round, uniq } from "lodash";
-import { getJsonTable, renderTable } from "./lib/excel";
+import { getAOATable, headers, renderTable } from "./lib/excel";
 import { utils } from 'xlsx';
 import getDate from "./lib/date";
 
@@ -46,6 +46,8 @@ class Main {
                 commissions.set('__defaultPath', evt.data.path);
             }
         });
+        // Set current date to file extension input
+        (<HTMLInputElement>document.querySelector('#file-extension-input')).value = getDate();
     }
 
     private enableDownload() {
@@ -59,69 +61,68 @@ class Main {
     }
 
     private downloadAll() {
+        const extension = (<HTMLInputElement>document.querySelector('#file-extension-input')).value;
+
         let downloadCount = this.categories.reduce((count, category) => {
+
             const commission = commissions.get(category) ? commissions.get(category) : {};
+
             if (commission['excluded']) return count;
             if (isNaN(+commission['value']) || commission['value'] == '') return count;
-            const categoryTable = this.table.reduce((array, row) => {
-                if (row['Category'] != category) return array;
-                const {Category, Tax, ...newRow} = row;
-                return array.concat(newRow);
+
+            const categoryTable: any[][] = this.table.reduce((array, row: any[]) => {
+                if (row[0] != category) return array;
+                const newRow = row.slice(1);
+                return array.concat([newRow]);
             }, []);
 
             const value = Number(commission['value']);
-            const totalItems = categoryTable.reduce((total: number, row: { [x: string]: number; }) => {
-                return total + row['Items Sold'] - row['Items Refunded'];
+            const totalItems = categoryTable.reduce((total: number, row: any[]) => {
+                return total + row[headers.indexOf('Items Sold') - 1] - row[headers.indexOf('Items Refunded') - 1];
             }, 0);
             const totalSales: number = categoryTable.reduce((total: number, row: { [x: string]: any; }) => {
-                return total + Number(row['Gross Sales']);
+                return total + Number(row[headers.indexOf('Gross Sales') - 1]);
             }, 0);
 
-            categoryTable.forEach(row => {
-                ['Product Sales', 'Refunds', 'Net Sales', 'Gross Sales', 'Discounts & Comps'].forEach(key => {
+            categoryTable.forEach((row: { [x: string]: any; }) => {
+                [4, 6, 7, 8, 9].forEach(key => {
                     row[key] = `£${Number(row[key]).toFixed(2)}`;
                 });
             });
 
+            categoryTable.unshift(headers.slice(1));
+
+            categoryTable.unshift([,,,,`${category}-${extension}`]);
+
             if (!commission['type'] || commission['type'] == '£') {
-                categoryTable.push({
-                    'Refunds': `Total items:`,
-                    'Discounts & Comps': `${totalItems}`,
-                    'Net Sales': `Total sales:`,
-                    'Gross Sales': `£${totalSales.toFixed(2)}`
-                });
-                categoryTable.push({
-                    'Net Sales': `Commission @ £${value}:`,
-                    'Gross Sales': `£${(totalItems * value).toFixed(2)}`
-                });
-                categoryTable.push({
-                    'Net Sales': 'Total owed:',
-                    'Gross Sales': `£${(totalSales - totalItems * value).toFixed(2)}`
-                });
+                categoryTable.push([
+                    , , , , , , 'Total items:', `${totalItems}`, 'Total sales: ', `£${totalSales.toFixed(2)}`
+                ]);
+                categoryTable.push([
+                    , , , , , , , , `Commission @ £${value}:`, `£${(totalItems * value).toFixed(2)}`
+                ]);
+                categoryTable.push([
+                    , , , , , , , , `Total owed:`, `£${(totalSales - totalItems * value).toFixed(2)}`
+                ]);
             } else {
                 const commissionValue = totalSales * value / 100;
 
-                categoryTable.push({
-                    'Refunds': `Total items:`,
-                    'Discounts & Comps': `${totalItems}`,
-                    'Net Sales': `Total sales:`,
-                    'Gross Sales': `£${round(totalSales, 2).toFixed(2)}`
-                });
-                categoryTable.push({
-                    'Net Sales': `Commission @ ${value}%:`,
-                    'Gross Sales': `£${round(commissionValue).toFixed(2)}`
-                });
-                categoryTable.push({
-                    'Net Sales': 'Total owed:',
-                    'Gross Sales': `£${round(totalSales - commissionValue, 2).toFixed(2)}`
-                });
+                categoryTable.push([
+                    , , , , , , 'Total items:', `${totalItems}`, 'Total sales: ', `£${totalSales.toFixed(2)}`
+                ]);
+                categoryTable.push([
+                    , , , , , , , , `Commission @ ${value}%:`, `£${round(commissionValue).toFixed(2)}`
+                ]);
+                categoryTable.push([
+                    , , , , , , , , `Total owed:`, `£${round(totalSales - commissionValue, 2).toFixed(2)}`
+                ]);
             }
 
-            const sheet = utils.json_to_sheet(categoryTable);
+            const sheet = utils.aoa_to_sheet(categoryTable);
             const workBook = utils.book_new();
             workBook.Sheets['Sheet1'] = sheet;
             workBook.SheetNames.push('Sheet1');
-            (<any>window).writeWorkbook(workBook, `${this.outputFolder}\\${category}-${getDate()}.xlsx`);
+            (<any>window).writeWorkbook(workBook, `${this.outputFolder}\\${category}-${extension}.xlsx`);
             return count+1;
         }, 0);
         global.alert(`${downloadCount} files downloaded`);
@@ -129,7 +130,7 @@ class Main {
 
     private takeTableInput(e: InputEvent): void {
         // Get table from data
-        getJsonTable(<InputEvent>e).then(table => {
+        getAOATable(<InputEvent>e).then(table => {
             this.table = table;
             // Render table to DOM
             const inputTable = <HTMLTableElement>document.querySelector('#input-table');
@@ -144,7 +145,7 @@ class Main {
     }
 
     private initaliseCategories(): void {
-        this.categories = uniq(this.table.map(row => row["Category"]));
+        this.categories = uniq(this.table.map(row => row[0]));
         const tableBody = document.querySelector('#commissions-table tbody');
         this.categories.forEach((category) => {
             const commission = commissions.get(category) ? commissions.get(category) : {};
