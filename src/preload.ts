@@ -1,12 +1,19 @@
-const fs = require('fs');
-const path = require('path');
-const { contextBridge, ipcRenderer} = require('electron');
-const { writeFile } = require('xlsx');
+import fs = require('fs');
+import path = require('path');
+import { contextBridge, ipcRenderer } from 'electron';
+import { writeFile } from 'xlsx';
 
-const commissions = JSON.parse(fs.readFileSync(path.join(__dirname, 'commissions.json')));
+const commissionsPath = path.join(__dirname, 'commissions.json');
+
+if (!fs.existsSync(commissionsPath)) {
+    fs.writeFileSync(path.join(__dirname, 'commissions.json'), "{}");
+}
+
+const commissions = JSON.parse(fs.readFileSync(commissionsPath).toString());
+console.log(commissions);
 contextBridge.exposeInMainWorld('commissions', {
-    get: (key) => commissions[key],
-    set: (key, value) => {
+    get: (key: string) => commissions[key],
+    set: (key: string, value: any) => {
         commissions[key] = value;
         const json = JSON.stringify(commissions);
         fs.writeFileSync(path.join(__dirname, 'commissions.json'), json);

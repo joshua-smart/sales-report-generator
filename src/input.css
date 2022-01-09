@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 @layer components {
-    .td {
+    td {
         @apply border border-gray-400;
     }
 
-    .tr {
+    tr {
         @apply hover:bg-gray-200;
     }
 

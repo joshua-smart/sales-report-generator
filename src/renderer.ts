@@ -2,13 +2,18 @@ import { clone, round, uniq } from "lodash";
 import { getAOATable, headers, renderTable } from "./lib/excel";
 import { utils } from 'xlsx';
 import getDate from "./lib/date";
+import './build/output.css';
 
 type Commissions = {
     set: (key: string, value: any) => void,
     get: (key: string) => string
-}
+};
 
 const commissions = <Commissions>(<any>window).commissions;
+
+import downloadImg from './file_download_black_48dp.svg';
+(<HTMLImageElement>document.querySelector('#download-img')).src = downloadImg;
+
 
 class Main {
 
@@ -28,7 +33,7 @@ class Main {
         // Assign folder select
         document.querySelector('#output-dir-input').addEventListener('click', e => {
             e.preventDefault();
-            window.postMessage({type: 'select-dirs'});
+            window.postMessage({ type: 'select-dirs' });
         });
         // Assing folder select response listener
         window.addEventListener('message', evt => {
@@ -39,10 +44,10 @@ class Main {
                     this.outputFolder = null;
                     this.disableDownload();
                     return;
-                };
+                }
                 document.querySelector('#output-dir-result').innerHTML = path;
                 this.outputFolder = evt.data.path;
-                if(this.table) this.enableDownload();
+                if (this.table) this.enableDownload();
                 commissions.set('__defaultPath', evt.data.path);
             }
         });
@@ -92,7 +97,7 @@ class Main {
 
             categoryTable.unshift(headers.slice(1));
 
-            categoryTable.unshift([,,,,`${category}-${extension}`]);
+            categoryTable.unshift([, , , , `${category}-${extension}`]);
 
             if (!commission['type'] || commission['type'] == '£') {
                 categoryTable.push([
@@ -123,7 +128,7 @@ class Main {
             workBook.Sheets['Sheet1'] = sheet;
             workBook.SheetNames.push('Sheet1');
             (<any>window).writeWorkbook(workBook, `${this.outputFolder}\\${category}-${extension}.xlsx`);
-            return count+1;
+            return count + 1;
         }, 0);
         global.alert(`${downloadCount} files downloaded`);
     }
@@ -175,16 +180,16 @@ class Main {
 
             row.querySelector('.commission-type-select').addEventListener('change', e => {
                 const newCommission = commissions.get(category) ? clone(commissions.get(category)) : {};
-                newCommission['type'] = (<HTMLInputElement>e.target).value
+                newCommission['type'] = (<HTMLInputElement>e.target).value;
                 commissions.set(category, newCommission);
             });
 
             row.querySelector('.commission-value-input').addEventListener('input', e => {
-                const value = (<HTMLInputElement>e.target).value
+                const value = (<HTMLInputElement>e.target).value;
                 const newCommission = commissions.get(category) ? clone(commissions.get(category)) : {};
                 newCommission['value'] = value;
                 commissions.set(category, newCommission);
-                if(isNaN(+value) || value == "") {
+                if (isNaN(+value) || value == "") {
                     (<HTMLElement>e.target).classList.remove('bg-gray-300');
                     return;
                 }

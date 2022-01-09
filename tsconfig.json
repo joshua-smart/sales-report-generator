@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "downlevelIteration": true
-    }
+        "downlevelIteration": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true
+    },
 }

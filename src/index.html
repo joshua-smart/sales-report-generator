@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <title>sales report generator</title>
-        <link rel="stylesheet" href="build/output.css">
     </head>
     <body class="p-2 flex h-screen">
         <div class="p-2 flex flex-col w-1/2 min-w-[15rem] mr-4">
@@ -47,9 +46,10 @@
                     <button id="output-dir-input" type="button" class="bg-gray-100 p-1 rounded border border-gray-500 hover:bg-gray-200">Select output folder</button>
                     <span class="p-2 text-lg truncate" id="output-dir-result">No folder selected</span>
                 </div>
-                <button id="download-button" disabled="true" type="button" class="bg-gray-100 p-1 rounded border border-gray-500 hover:bg-gray-200 disabled:opacity-50 inline-block aspect-square h-full"><img src="file_download_black_48dp.svg" alt="download" class="scale-125"></button>
+                <button id="download-button" disabled="true" type="button" class="bg-gray-100 p-1 rounded border border-gray-500 hover:bg-gray-200 disabled:opacity-50 inline-block aspect-square h-full">
+                    <img id="download-img" alt="download" class="scale-125">
+                </button>
             </div>
         </div>
-        <script type="module" src="./build/bundle.js" charset="utf-8"></script>
     </body>
 </html>

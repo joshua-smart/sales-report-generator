@@ -1,16 +1,15 @@
 {
     "name": "sales-report-generator",
     "productName": "sales report generator",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "sales report generator",
-    "main": "src/index.js",
+    "main": "./.webpack/main",
     "scripts": {
         "start": "electron-forge start",
         "package": "electron-forge package",
         "make": "electron-forge make",
-        "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/build/output.css --watch",
-        "webpack-dev": "npx webpack watch --config ./webpack.config.js --mode development",
-        "webpack-prod": "npx webpack --config ./webpack.config.js --mode production"
+        "publish": "electron-forge publish",
+        "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/build/output.css --watch"
     },
     "keywords": [],
     "author": {
@@ -30,23 +29,61 @@
                         "iconUrl": "https://raw.githubusercontent.com/joshua-smart/sales-report-generator/main/icon.ico"
                     }
                 }
+            ],
+            "publishers": [
+                {
+                    "name": "@electron-forge/publisher-github",
+                    "config": {
+                        "repository": {
+                            "owner": "joshua-smart",
+                            "name": "sales-report-generator"
+                        },
+                        "authToken": "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",
+                        "draft": true
+                    }
+                }
+            ],
+            "plugins": [
+                [
+                    "@electron-forge/plugin-webpack",
+                    {
+                        "mainConfig": "./webpack.main.config.js",
+                        "renderer": {
+                            "config": "./webpack.renderer.config.js",
+                            "entryPoints": [
+                                {
+                                    "name": "main_window",
+                                    "html": "./src/index.html",
+                                    "js": "./src/renderer.ts",
+                                    "preload": {
+                                        "js": "./src/preload.ts"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
             ]
         }
     },
     "devDependencies": {
         "@electron-forge/cli": "^6.0.0-beta.61",
         "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+        "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
+        "@electron-forge/publisher-github": "^6.0.0-beta.61",
+        "@types/electron": "^1.6.10",
         "@types/lodash": "^4.14.178",
+        "css-loader": "^6.5.1",
         "electron": "^16.0.5",
         "lodash": "^4.17.21",
         "source-map-loader": "^3.0.0",
+        "style-loader": "^3.3.1",
         "tailwindcss": "^3.0.7",
         "ts-loader": "^9.2.6",
-        "webpack": "^5.65.0",
-        "webpack-cli": "^4.9.1"
+        "typescript": "^4.5.4",
+        "xlsx": "^0.17.4"
     },
     "dependencies": {
-        "electron-squirrel-startup": "^1.0.0",
-        "xlsx": "^0.17.4"
+        "electron-squirrel-startup": "^1.0.0"
     }
 }
